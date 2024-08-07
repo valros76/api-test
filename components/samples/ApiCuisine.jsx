@@ -55,7 +55,7 @@ export default function ApiCuisine() {
           <VideoView
             style={{
               width: 350,
-              aspectRatio: 21 / 6,
+              aspectRatio: 1/1,
             }}
             player={stablePlayer}
             allowsFullscreen
