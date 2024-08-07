@@ -8,16 +8,21 @@ export default function ApiCuisine() {
   const [recette, setRecette] = useState(undefined);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const player = useVideoPlayer(recette?.strYoutube, player => {
+  const player = useVideoPlayer(recette?.youtube, player => {
     player.loop = false;
     player.play();
+  });
+
+  const stablePlayer = useVideoPlayer("https://cdn.pixabay.com/video/2022/03/04/109705-685086293_large.mp4", stablePlayer => {
+    stablePlayer.loop = false;
+    stablePlayer.play();
   });
 
   useEffect(() => {
     if (!recette) {
       fetchApiCuisine();
     }
-    const subscription = player.addListener("playingChange", isPlaying => {
+    const subscription = stablePlayer.addListener("playingChange", isPlaying => {
       setIsPlaying(isPlaying)
     });
 
@@ -31,7 +36,13 @@ export default function ApiCuisine() {
       method: "GET",
     }).then(response =>
       response?.status === 200 && response.json()
-    ).then(datas => setRecette(datas?.meals));
+    ).then(datas => {
+      const recetteUnique = datas?.meals.map((item, index) => index === 0 && ({
+        title: item.strMeal,
+        youtube: item.strYoutube
+      }));
+      setRecette(recetteUnique);
+    });
   };
 
   return (
@@ -39,14 +50,14 @@ export default function ApiCuisine() {
       {recette && (
         <>
           <Text>
-            {recette.strMeal}
+            {recette?.title}
           </Text>
           <VideoView
             style={{
               width: 350,
               aspectRatio: 21 / 6,
             }}
-            player={player}
+            player={stablePlayer}
             allowsFullscreen
           />
           <View style={{
