@@ -17,7 +17,7 @@ export default function ApiCuisine() {
     if (!recette) {
       fetchApiCuisine();
     }
-    const subscription = player.addEventListener("playingChange", isPlaying => {
+    const subscription = player.addListener("playingChange", isPlaying => {
       setIsPlaying(isPlaying)
     });
 
